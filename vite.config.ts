@@ -1,8 +1,10 @@
 /// <reference types="vitest/config" />
 import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  // Set VITE_BASE_PATH when hosting under a sub-path (e.g. GitHub Pages).
+  base: loadEnv(mode, process.cwd(), 'VITE_').VITE_BASE_PATH || '/',
   plugins: [react()],
   test: {
     environment: 'jsdom',
@@ -15,4 +17,4 @@ export default defineConfig({
       exclude: ['src/**/*.test.{ts,tsx}', 'src/test/**', 'src/main.tsx'],
     },
   },
-});
+}));
