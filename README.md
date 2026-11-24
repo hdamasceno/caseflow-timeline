@@ -99,9 +99,31 @@ Open the printed URL. Add `?today=2026-05-04` to pin the "as of" date, or change
 | `npm run coverage` | the same, with a V8 coverage report |
 | `npm run test:e2e` | 6 Playwright tests against the production build (wheel zoom, drag, keyboard, resize) |
 | `npm run screenshots` | regenerates the images in `docs/` |
+| `npm run check:secrets` | secret scan of the staged files (`-- --all` for every tracked file) |
+| `npm run test:hooks` | tests for the secret scanner (`node --test`) |
 
-CI runs lint, typecheck, unit tests with coverage, and then Playwright on every push and pull
+CI runs a secret scan, lint, typecheck, unit tests with coverage, and then Playwright on every push and pull
 request.
+
+### Git hooks
+
+`npm install` sets up [Husky](https://typicode.github.io/husky/) hooks, so the checks CI runs
+also run locally, before anything leaves your machine:
+
+| Hook | Runs | Why |
+| --- | --- | --- |
+| `pre-commit` | secret scan, then lint, then typecheck | stop private keys, tokens and `.env` files before they are in history |
+| `pre-push` | unit and component tests (Vitest), then Playwright end-to-end tests | do not push a branch that CI will reject |
+
+The secret scan (`scripts/check-secrets.mjs`, no dependencies) blocks `.env` files (except
+`.env.example`), key and certificate files (`.pem`, `.key`, `.p8`, `.p12`, `.jks`, SSH keys), and
+content that looks like a private key, cloud or API token, or a connection string with a password
+for a non-local host. It only reads the staged version of each file and never prints the value it
+found. If [gitleaks](https://github.com/gitleaks/gitleaks) is installed it runs too, as a second
+opinion. A false positive can be allowed with a `secret-scan: allow` comment on that line.
+
+In an emergency `git commit --no-verify` skips the hooks; CI still runs the same secret scan, plus
+gitleaks over the full history, on every push and pull request.
 
 ## Keyboard
 

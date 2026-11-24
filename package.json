@@ -13,7 +13,10 @@
     "test:watch": "vitest",
     "coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
-    "screenshots": "SCREENSHOTS=1 playwright test e2e/screenshots.spec.ts"
+    "check:secrets": "node scripts/check-secrets.mjs",
+    "test:hooks": "node --test \"scripts/*.test.mjs\"",
+    "screenshots": "SCREENSHOTS=1 playwright test e2e/screenshots.spec.ts",
+    "prepare": "husky"
   },
   "dependencies": {
     "react": "^19.3.1",
@@ -29,6 +32,7 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
     "@vitest/coverage-v8": "^5.1.1",
+    "husky": "^9.1.7",
     "jsdom": "^31.0.1",
     "oxlint": "^1.90.0",
     "typescript": "~7.0.2",
