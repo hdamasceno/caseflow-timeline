@@ -1,0 +1,5 @@
+# Runs before every push: the slower test suites.
+# 1. Unit and component tests (Vitest).
+npm test
+# 2. End-to-end tests (Playwright; first run needs: npx playwright install chromium).
+npm run test:e2e
